@@ -1,0 +1,10 @@
+edu\episen\si\ing1\pds\backend\server\release2\ClientJsonProperties.class
+edu\episen\si\ing1\pds\backend\server\release2\Server.class
+edu\episen\si\ing1\pds\backend\server\DataSource.class
+edu\episen\si\ing1\pds\backend\server\release2\ServerProperties.class
+edu\episen\si\ing1\pds\backend\server\release2\ServerConfiguration.class
+edu\episen\si\ing1\pds\backend\server\JDBCConnectionPool.class
+edu\episen\si\ing1\pds\backend\server\release2\ClientHandler.class
+edu\episen\si\ing1\pds\backend\server\release2\Crud.class
+edu\episen\si\ing1\pds\backend\server\release2\Request.class
+edu\episen\si\ing1\pds\backend\server\release2\ClientHandler$1.class
