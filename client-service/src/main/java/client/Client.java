@@ -4,6 +4,7 @@ package client;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import location.clientLoc.HomeLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,9 @@ public class Client {
                     if ("Nimbus".equals(info.getName())) {
                         UIManager.setLookAndFeel(info.getClassName());
 
-                       //Home h = new Home();
+                       HomeLocation h = new HomeLocation();
+                       String[] s = {};
+                       h.main(s);
                         if(args[0].equalsIgnoreCase("selectAll")) {
                             map.get("demoOneSelectAll").put("id", " ");
                             String responses = getSend("demoOneSelectAll");
