@@ -17,7 +17,7 @@ public class Location {
     static JPanel panelTop = new JPanel();
     static JPanel panelFormulaire = new JPanel();
     static serveurLoc r = new serveurLoc();
-    static String[] tab = new String[6];
+    static String[] tab = new String[9];
     static String strResp = "";
 
     static JFrame frameEnvoie = new JFrame("Propositions");
@@ -118,7 +118,7 @@ public class Location {
             panelEnvoie.removeAll();
             panelErreur.removeAll();
 
-            if(Integer.parseInt(tab[3]) <= r.getPlace(ad)) {
+            /*if(Integer.parseInt(tab[3]) <= r.getPlace(ad)) {
                 String[] tabResp = r.getDispoBat(ad,tab[3]);
                 for(int i=0;i<tabResp.length;i++) {
                     strResp+= (i != tabResp.length - 1) ? tabResp[i] + "-" : tabResp[i];
@@ -138,6 +138,43 @@ public class Location {
                 frameEnvoie.add(panelEnvoie);
                 frameEnvoie.setSize(500, 500);
                 frameEnvoie.setVisible(true);
+            } else {
+                JLabel lErreur = new JLabel("Le batiment : " + tab[0] + " possède seulement " + r.getPlace(ad) + " place(s) restante(s). " +
+                        "Choisissez un nouveau batiment, ou alors prenez un nombre de salles correcte.");
+                panelErreur.add(lErreur, BorderLayout.CENTER);
+                frameErreur.add(panelErreur);
+                frameErreur.setSize(1000, 200);
+                frameErreur.setVisible(true);
+            }*/
+
+            if((Integer.parseInt(tab[3])+Integer.parseInt(tab[4])+Integer.parseInt(tab[5])+Integer.parseInt(tab[6])) <= r.getPlace(ad)) {
+                String[] tabResp = r.getDispoBatEvo(ad,tab[3],tab[4],tab[5],tab[6]);
+                String[][] tabProp = new String[tabResp.length][3];
+                String[] column = {"id","etage","type de salle"};
+                for(int i=0;i<tabResp.length;i++) {
+                    System.out.println(tabResp[i]);
+                    tabProp[i][0] = tabResp[i].split("//")[0];
+                    tabProp[i][1] = tabResp[i].split("//")[1];
+                    tabProp[i][2] = tabResp[i].split("//")[2];
+                }
+                JTable jt=new JTable(tabProp,column);
+                jt.setBounds(30,40,500,400);
+                JScrollPane sp=new JScrollPane(jt);
+                panelEnvoie.add(sp);
+
+
+                final JButton buttonValide = new JButton("Validé");
+                buttonValide.addActionListener(new ActionValide());
+                buttonValide.setFont(new Font("Calibri", Font.PLAIN, 14));
+                buttonValide.setBackground(new Color(0x3C4DCE));
+                buttonValide.setForeground(Color.white);
+                buttonValide.setUI(new HomeLocation.StyledButtonUI());
+                panelEnvoie.add(buttonValide);
+
+                frameEnvoie.add(sp);
+                frameEnvoie.setSize(500, 500);
+                frameEnvoie.setVisible(true);
+
             } else {
                 JLabel lErreur = new JLabel("Le batiment : " + tab[0] + " possède seulement " + r.getPlace(ad) + " place(s) restante(s). " +
                         "Choisissez un nouveau batiment, ou alors prenez un nombre de salles correcte.");
@@ -563,6 +600,23 @@ public class Location {
         return strTab;
     }
 
+    public static String[][] retourResa(String bat, int nbPS, int nbB, int nbSO, int nbSC) {
+        String data[] = r.getDispoBatEvo(bat, nbPS+"", nbB+"", nbSO+"", nbSC+"");
+        int row = nbPS+nbB+nbSO+nbSC;
+        String retour[][] = new String[row][3];
+        String salle[] = new String[3];
+
+        for(int i = 0; i < row; i++) {
+            salle = new String[3];
+            salle[0] = data[i].split("//")[0];
+            salle[1] = data[i].split("//")[1];
+            salle[2] = data[i].split("//")[2];
+            retour[i] = salle;
+        }
+
+        return retour;
+    }
+
     static void setTextLabel(String text, JPanel p) {
         JLabel l = new JLabel(text);
         p.add(l);
@@ -605,14 +659,23 @@ public class Location {
             case "Adresse entreprise":
                 tab[2] = entry.split(":/-/")[1];
                 break;
-            case "Nombres de salles":
+            case "Nombre de petites salles":
                 tab[3] = entry.split(":/-/")[1];
                 break;
-            case "Téléphone":
+            case "Nombre de bureaux":
                 tab[4] = entry.split(":/-/")[1];
                 break;
-            case "Mail":
+            case "Nombre de salles ouvertes":
                 tab[5] = entry.split(":/-/")[1];
+                break;
+            case "Nombre de salles de conférences":
+                tab[6] = entry.split(":/-/")[1];
+                break;
+            case "Téléphone":
+                tab[7] = entry.split(":/-/")[1];
+                break;
+            case "Mail":
+                tab[8] = entry.split(":/-/")[1];
                 break;
         }
         return tab;
@@ -644,9 +707,12 @@ public class Location {
 
         addLabelAndTextField("Entreprise:", 0, panelFormulaire);
         addLabelAndTextField("Adresse entreprise:", 1, panelFormulaire);
-        addLabelAndTextField("Nombres de salles:", 2, panelFormulaire);
-        addLabelAndTextField("Téléphone:",3, panelFormulaire);
-        addLabelAndTextField("Mail:", 4, panelFormulaire);
+        addLabelAndTextField("Nombre de petites salles:", 2, panelFormulaire);
+        addLabelAndTextField("Nombre de bureaux:", 3, panelFormulaire);
+        addLabelAndTextField("Nombre de salles ouvertes:", 4, panelFormulaire);
+        addLabelAndTextField("Nombre de salles de conférences:", 5, panelFormulaire);
+        addLabelAndTextField("Téléphone:",6, panelFormulaire);
+        addLabelAndTextField("Mail:", 7, panelFormulaire);
 
 
 

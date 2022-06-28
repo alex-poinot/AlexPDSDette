@@ -72,6 +72,16 @@ public class serveurLoc {
         return responses.split("-");
     }
 
+    public String[] getDispoBatEvo(String bat, String nbPS, String nbB, String nbSO, String nbSC) {
+        map.get("getDispoBatEvo").put("rl_building", bat);
+        map.get("getDispoBatEvo").put("rl_nb_loc_ps", nbPS);
+        map.get("getDispoBatEvo").put("rl_nb_loc_b", nbB);
+        map.get("getDispoBatEvo").put("rl_nb_loc_so", nbSO);
+        map.get("getDispoBatEvo").put("rl_nb_loc_sc", nbSC);
+        String responses = getSend("getDispoBatEvo");
+        return responses.split("-");
+    }
+
     public void setStatuResa(String bat, String statu) {
         map.get("setStatuResa").put("rl_building", bat);
         map.get("setStatuResa").put("rl_resa", statu);

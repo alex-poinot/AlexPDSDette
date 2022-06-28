@@ -95,6 +95,9 @@ public class ClientHandler implements Runnable {
             if (request.split("@")[0].equals("getDispoBat")) {
                 ds.writeUTF(getDispoBat(connection, map).toString());
             }
+            if (request.split("@")[0].equals("getDispoBatEvo")) {
+                ds.writeUTF(getDispoBatEvo(connection, map).toString());
+            }
             if (request.split("@")[0].equals("setStatuResa")) {
                 ds.writeUTF(setStatuResa(connection, map).toString());
             }
@@ -318,6 +321,76 @@ public class ClientHandler implements Runnable {
             while (rs.next()) {
                 str += (!rs.isLast()) ? rs.getString("id_room") + "//" + rs.getString("name_floor") + "-" :
                         rs.getString("id_room") + "//" + rs.getString("name_floor");
+            }
+            sb.append(str);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return sb;
+    }
+
+    public StringBuilder getDispoBatEvo(Connection connection, Map<String, String> map) {
+        StringBuilder sb = null;
+        String str = "";
+        try {
+            sb = new StringBuilder();
+            String sql = "select id_room, name_floor, name_room from room r"+
+                    " inner join floor f on r.id_floor = f.id_floor"+
+                    " inner join building b on b.id_building = f.id_building"+
+                    " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Salle de conf%'" +
+                    " order by id_room" +
+                    " LIMIT " + map.get("rl_nb_loc_sc");
+            ResultSet rs = connection.createStatement().executeQuery(sql);
+            System.out.println(sql);
+            while (rs.next()) {
+                str += (!rs.isLast()) ? rs.getString("id_room") + "//" + rs.getString("name_floor") + "//" + rs.getString("name_room") + "-" :
+                        rs.getString("id_room") + "//" + rs.getString("name_floor") + "//" + rs.getString("name_room") + "-";
+            }
+            sb.append(str);
+
+            str = "";
+            String sql1 = "select id_room, name_floor, name_room from room r"+
+                    " inner join floor f on r.id_floor = f.id_floor"+
+                    " inner join building b on b.id_building = f.id_building"+
+                    " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Bureau%'" +
+                    " order by id_room" +
+                    " LIMIT " + map.get("rl_nb_loc_b");
+            ResultSet rs1 = connection.createStatement().executeQuery(sql1);
+            System.out.println(sql1);
+            while (rs1.next()) {
+                str += (!rs1.isLast()) ? rs1.getString("id_room") + "//" + rs1.getString("name_floor") + "//" + rs1.getString("name_room") + "-" :
+                        rs1.getString("id_room") + "//" + rs1.getString("name_floor") + "//" + rs1.getString("name_room") + "-";
+            }
+            sb.append(str);
+
+            str = "";
+            String sql2 = "select id_room, name_floor, name_room from room r"+
+                    " inner join floor f on r.id_floor = f.id_floor"+
+                    " inner join building b on b.id_building = f.id_building"+
+                    " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Salle ouverte%'" +
+                    " order by id_room" +
+                    " LIMIT " + map.get("rl_nb_loc_so");
+            ResultSet rs2 = connection.createStatement().executeQuery(sql2);
+            System.out.println(sql2);
+            while (rs2.next()) {
+                str += (!rs2.isLast()) ? rs2.getString("id_room") + "//" + rs2.getString("name_floor") + "//" + rs2.getString("name_room") + "-" :
+                        rs2.getString("id_room") + "//" + rs2.getString("name_floor") + "//" + rs2.getString("name_room") + "-";
+            }
+            sb.append(str);
+
+            str = "";
+            String sql3 = "select id_room, name_floor, name_room from room r"+
+                    " inner join floor f on r.id_floor = f.id_floor"+
+                    " inner join building b on b.id_building = f.id_building"+
+                    " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Petite salle%'" +
+                    " order by id_room" +
+                    " LIMIT " + map.get("rl_nb_loc_ps");
+            ResultSet rs3 = connection.createStatement().executeQuery(sql3);
+            System.out.println(sql3);
+            while (rs3.next()) {
+                str += (!rs3.isLast()) ? rs3.getString("id_room") + "//" + rs3.getString("name_floor") + "//" + rs3.getString("name_room") + "-" :
+                        rs3.getString("id_room") + "//" + rs3.getString("name_floor") + "//" + rs3.getString("name_room") + "-";
             }
             sb.append(str);
 

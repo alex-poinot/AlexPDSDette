@@ -41,6 +41,13 @@
     "rl_building":  "",
     "rl_nb_loc": ""
   },
+  "getDispoBatEvo": {
+    "rl_building":  "",
+    "rl_nb_loc_ps": "",
+    "rl_nb_loc_b": "",
+    "rl_nb_loc_sc": "",
+    "rl_nb_loc_so": ""
+  },
   "setStatuResa": {
     "rl_building":  "",
     "rl_resa":""
