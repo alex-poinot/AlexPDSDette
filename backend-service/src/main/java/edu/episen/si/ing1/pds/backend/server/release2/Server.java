@@ -16,6 +16,7 @@ public class Server {
     private final static Logger log = LoggerFactory.getLogger(Server.class.getName());
     private ServerSocket server;
     private DataSource ds;
+    private int nbCon = 5;
     public Server(ServerConfiguration c) {
         try {
             this.server = new ServerSocket(c.getConfig().getPort());
@@ -30,23 +31,45 @@ public class Server {
         }
     }
 
-    public void serverService()
+    public void serverService(String pool)
     {
         try {
 
             while (true) {
+                log.info(pool);
+                if(!pool.trim().equalsIgnoreCase("overload")) {
+                    log.info("test -" + pool + "-");
+                    Socket client = server.accept();
+                    log.debug("A new client is here !");
 
-                // socket object to receive incoming client
-                // requests
-                Socket client = server.accept();
-                log.debug("A new client is here !");
-                // create a new thread object
-                Connection connection = ds.addData();
-                ClientHandler clientSock = new ClientHandler(client, connection);
+                    Connection connection = ds.addData();
+                    ClientHandler clientSock = new ClientHandler(client, connection);
 
-                // This thread will handle the client
-                // separately
-                new Thread(clientSock).start();
+                    new Thread(clientSock).start();
+                } else {
+                    if(nbCon > 0) {
+                        Socket client = server.accept();
+                        log.debug("Client " + nbCon + " is here !");
+                        nbCon = nbCon-1;
+
+                        Connection connection = ds.addData();
+                        ClientHandler clientSock = new ClientHandler(client, connection);
+
+                        new Thread(clientSock).start();
+
+                        try {
+                            Thread.sleep(120000);
+                            log.debug("End of client");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else {
+                        log.debug("Max connection");
+                    }
+
+                }
             }
         }
         catch (IOException e) {
@@ -66,7 +89,7 @@ public class Server {
 
     public static void main(String[] args) {
 
-        new Server(new ServerConfiguration(25)).serverService();
+        new Server(new ServerConfiguration(25)).serverService(args[0]);
     }
 }
 

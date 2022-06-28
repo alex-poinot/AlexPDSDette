@@ -16,6 +16,7 @@ import java.sql.*;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static edu.episen.si.ing1.pds.backend.server.DataSource.addData;
 import static edu.episen.si.ing1.pds.backend.server.release2.Crud.*;
 import static java.lang.Thread.sleep;
 
@@ -110,6 +111,8 @@ public class ClientHandler implements Runnable {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            addData();
         }
     }
 /*************** starting method request for building indicators*********************/
@@ -335,7 +338,7 @@ public class ClientHandler implements Runnable {
         String str = "";
         try {
             sb = new StringBuilder();
-            String sql = "select id_room, name_floor, name_room from room r"+
+            String sql = "select id_room, name_floor, name_room, price from room r"+
                     " inner join floor f on r.id_floor = f.id_floor"+
                     " inner join building b on b.id_building = f.id_building"+
                     " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Salle de conf%'" +
@@ -344,13 +347,12 @@ public class ClientHandler implements Runnable {
             ResultSet rs = connection.createStatement().executeQuery(sql);
             System.out.println(sql);
             while (rs.next()) {
-                str += (!rs.isLast()) ? rs.getString("id_room") + "//" + rs.getString("name_floor") + "//" + rs.getString("name_room") + "-" :
-                        rs.getString("id_room") + "//" + rs.getString("name_floor") + "//" + rs.getString("name_room") + "-";
+                str += rs.getString("id_room") + "//" + rs.getString("name_floor") + "//" + rs.getString("name_room") + "//" + rs.getString("price") + "-";
             }
             sb.append(str);
 
             str = "";
-            String sql1 = "select id_room, name_floor, name_room from room r"+
+            String sql1 = "select id_room, name_floor, name_room, price from room r"+
                     " inner join floor f on r.id_floor = f.id_floor"+
                     " inner join building b on b.id_building = f.id_building"+
                     " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Bureau%'" +
@@ -359,13 +361,12 @@ public class ClientHandler implements Runnable {
             ResultSet rs1 = connection.createStatement().executeQuery(sql1);
             System.out.println(sql1);
             while (rs1.next()) {
-                str += (!rs1.isLast()) ? rs1.getString("id_room") + "//" + rs1.getString("name_floor") + "//" + rs1.getString("name_room") + "-" :
-                        rs1.getString("id_room") + "//" + rs1.getString("name_floor") + "//" + rs1.getString("name_room") + "-";
+                str += rs1.getString("id_room") + "//" + rs1.getString("name_floor") + "//" + rs1.getString("name_room") + "//" + rs1.getString("price") + "-";
             }
             sb.append(str);
 
             str = "";
-            String sql2 = "select id_room, name_floor, name_room from room r"+
+            String sql2 = "select id_room, name_floor, name_room, price from room r"+
                     " inner join floor f on r.id_floor = f.id_floor"+
                     " inner join building b on b.id_building = f.id_building"+
                     " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Salle ouverte%'" +
@@ -374,13 +375,12 @@ public class ClientHandler implements Runnable {
             ResultSet rs2 = connection.createStatement().executeQuery(sql2);
             System.out.println(sql2);
             while (rs2.next()) {
-                str += (!rs2.isLast()) ? rs2.getString("id_room") + "//" + rs2.getString("name_floor") + "//" + rs2.getString("name_room") + "-" :
-                        rs2.getString("id_room") + "//" + rs2.getString("name_floor") + "//" + rs2.getString("name_room") + "-";
+                str += rs2.getString("id_room") + "//" + rs2.getString("name_floor") + "//" + rs2.getString("name_room") + "//" + rs2.getString("price") + "-";
             }
             sb.append(str);
 
             str = "";
-            String sql3 = "select id_room, name_floor, name_room from room r"+
+            String sql3 = "select id_room, name_floor, name_room, price from room r"+
                     " inner join floor f on r.id_floor = f.id_floor"+
                     " inner join building b on b.id_building = f.id_building"+
                     " WHERE b.building_name = '" + map.get("rl_building") + "' and r.status='free' and name_room like 'Petite salle%'" +
@@ -389,8 +389,7 @@ public class ClientHandler implements Runnable {
             ResultSet rs3 = connection.createStatement().executeQuery(sql3);
             System.out.println(sql3);
             while (rs3.next()) {
-                str += (!rs3.isLast()) ? rs3.getString("id_room") + "//" + rs3.getString("name_floor") + "//" + rs3.getString("name_room") + "-" :
-                        rs3.getString("id_room") + "//" + rs3.getString("name_floor") + "//" + rs3.getString("name_room") + "-";
+                str += rs3.getString("id_room") + "//" + rs3.getString("name_floor") + "//" + rs3.getString("name_room") + "//" + rs3.getString("price") + "-";
             }
             sb.append(str);
 
@@ -406,7 +405,7 @@ public class ClientHandler implements Runnable {
         String[] f = map.get("rl_resa").split("-");
         try {
             for(int i = 0; i < f.length; i++) {
-                String idRoom = f[i].split("//")[0];
+                String idRoom = f[i].trim();
                 String sql = "update room" +
                         " set position_sensor = 't'," +
                         " position_screen = 't'," +
@@ -516,6 +515,7 @@ public class ClientHandler implements Runnable {
             String sql = "INSERT INTO DEMOONE (DO_Text) VALUES ('" + text + "')";
             connection.createStatement().executeUpdate(sql);
             System.out.println(sql);
+            sb = new StringBuilder();
             sb.append("DONE");
 
         } catch (SQLException throwables) {

@@ -19,9 +19,10 @@ public class Location {
     static serveurLoc r = new serveurLoc();
     static String[] tab = new String[9];
     static String strResp = "";
+    static String[] tabResp;
 
     static JFrame frameEnvoie = new JFrame("Propositions");
-    static JPanel panelEnvoie = new JPanel(new GridLayout(6,1,10,10));
+    static JPanel panelEnvoie = new JPanel(new BorderLayout());
 
     static JFrame frameErreur = new JFrame("ERREUR");
     static JPanel panelErreur = new JPanel(new BorderLayout());
@@ -95,8 +96,12 @@ public class Location {
     public static class ActionValide implements ActionListener {
         public void actionPerformed(ActionEvent e)
         {
-            r.setCompanyName(tab[1],strResp);
-            r.setStatuResa(ad,strResp);
+            //r.setCompanyName(tab[1],strResp);
+            String str = "";
+            for(int i = 0; i < tabResp.length; i++) {
+                str += (i != tabResp.length -1) ? tabResp[i].split("//")[0] + "-" : tabResp[i].split("//")[0];
+            }
+            r.setStatuResa(ad,str);
             frameEnvoie.dispose();
         }
     }
@@ -148,19 +153,20 @@ public class Location {
             }*/
 
             if((Integer.parseInt(tab[3])+Integer.parseInt(tab[4])+Integer.parseInt(tab[5])+Integer.parseInt(tab[6])) <= r.getPlace(ad)) {
-                String[] tabResp = r.getDispoBatEvo(ad,tab[3],tab[4],tab[5],tab[6]);
-                String[][] tabProp = new String[tabResp.length][3];
-                String[] column = {"id","etage","type de salle"};
+                tabResp = r.getDispoBatEvo(ad,tab[3],tab[4],tab[5],tab[6]);
+                String[][] tabProp = new String[tabResp.length][4];
+                String[] column = {"id","etage","type de salle","prix"};
                 for(int i=0;i<tabResp.length;i++) {
                     System.out.println(tabResp[i]);
                     tabProp[i][0] = tabResp[i].split("//")[0];
                     tabProp[i][1] = tabResp[i].split("//")[1];
                     tabProp[i][2] = tabResp[i].split("//")[2];
+                    tabProp[i][3] = tabResp[i].split("//")[3];
                 }
                 JTable jt=new JTable(tabProp,column);
                 jt.setBounds(30,40,500,400);
                 JScrollPane sp=new JScrollPane(jt);
-                panelEnvoie.add(sp);
+                panelEnvoie.add(sp, BorderLayout.NORTH );
 
 
                 final JButton buttonValide = new JButton("Validé");
@@ -169,9 +175,9 @@ public class Location {
                 buttonValide.setBackground(new Color(0x3C4DCE));
                 buttonValide.setForeground(Color.white);
                 buttonValide.setUI(new HomeLocation.StyledButtonUI());
-                panelEnvoie.add(buttonValide);
+                panelEnvoie.add(buttonValide, BorderLayout.SOUTH );
 
-                frameEnvoie.add(sp);
+                frameEnvoie.add(panelEnvoie);
                 frameEnvoie.setSize(500, 500);
                 frameEnvoie.setVisible(true);
 
